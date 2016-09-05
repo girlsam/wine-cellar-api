@@ -64,5 +64,22 @@ router.put('/api/wines/:id', (req, res, next) => {
   });
 });
 
+router.delete('/api/wines/:id', (req, res, next) => {
+  const wineID = parseInt(req.params.id);
+  db.any(`DELETE FROM wines WHERE id = ${wineID}`, [true])
+    .then(function(wines) {
+      if (!wines.length) {
+        res.status(200).json(wines);
+      } else {
+        res.status(404).send({
+          status: 'error',
+          message: 'Wine not in cellar.'
+        });
+      }
+    })
+    .catch(function(error) {
+      next(error);
+  });
+});
 
 module.exports = router;
